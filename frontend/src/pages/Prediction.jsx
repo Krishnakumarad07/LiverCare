@@ -52,12 +52,12 @@ export default function Prediction() {
   };
 
   const isHighRisk = prediction.result === 'High Risk' || prediction.probability >= 50;
-  const prob = Math.round(prediction.probability * 10) / 10;
-  const oppProb = Math.round((100 - prob) * 10) / 10;
+  const highRiskPct = Math.round(prediction.probability * 10) / 10;
+  const lowRiskPct = Math.round((100 - highRiskPct) * 10) / 10;
 
   const donutData = [
-    { name: 'Low Risk', value: isHighRisk ? oppProb : prob, color: '#10B981' },
-    { name: 'High Risk', value: isHighRisk ? prob : oppProb, color: '#EF4444' },
+    { name: 'Low Risk (Safe)', value: lowRiskPct, color: '#10B981' },
+    { name: 'Disease Risk', value: highRiskPct, color: '#EF4444' },
   ];
 
   // Count abnormal biomarkers
@@ -139,7 +139,7 @@ export default function Prediction() {
                   : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
               }`}>
                 <Activity className="w-4 h-4"/>
-                <span>Probability: {prob}%</span>
+                <span>Risk Probability: {highRiskPct}%</span>
               </div>
             </div>
 
@@ -204,7 +204,7 @@ export default function Prediction() {
                       <p className={`text-[10px] font-semibold ${
                         isAbnormal ? 'text-rose-500' : 'text-emerald-500'
                       }`}>
-                        {isAbnormal ? '⬆ Above Normal' : '✓ Normal Range'}
+                        {isAbnormal ? (range.inverted ? '⬇ Low / Depleted' : '⬆ Above Normal') : '✓ Normal Range'}
                       </p>
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export default function Prediction() {
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className={`text-2xl font-black ${isHighRisk ? 'text-rose-600' : 'text-emerald-600'}`}>
-                  {prob}%
+                  {highRiskPct}%
                 </span>
                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                   {isHighRisk ? 'High Risk' : 'Low Risk'}
